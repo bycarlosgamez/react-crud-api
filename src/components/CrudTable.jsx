@@ -1,19 +1,8 @@
 import CrudTableRow from './CrudTableRow';
 
 const CrudTable = ({ db, handleDelete, setDataEdit }) => {
-  const tableRows = db.map((el) => {
-    return (
-      <CrudTableRow
-        key={el.id}
-        el={el}
-        handleDelete={handleDelete}
-        setDataEdit={setDataEdit}
-      />
-    );
-  });
-
   return (
-    <>
+    <div>
       <h3>Data Table</h3>
       <table>
         <thead>
@@ -24,16 +13,25 @@ const CrudTable = ({ db, handleDelete, setDataEdit }) => {
           </tr>
         </thead>
         <tbody>
-          {db.length === 0 ? (
+          {db.length > 0 ? (
+            db.map((el) => {
+              return (
+                <CrudTableRow
+                  key={el.id}
+                  el={el}
+                  handleDelete={handleDelete}
+                  setDataEdit={setDataEdit}
+                />
+              );
+            })
+          ) : (
             <tr>
               <td colSpan='3'>Database Empty</td>
             </tr>
-          ) : (
-            tableRows
           )}
         </tbody>
       </table>
-    </>
+    </div>
   );
 };
 

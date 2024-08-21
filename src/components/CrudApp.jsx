@@ -31,17 +31,44 @@ const Crud = () => {
 
   const createData = (data) => {
     data.id = Date.now();
-    setDataBase((prevData) => {
-      return [...prevData, data];
+
+    let options = {
+      body: data,
+      headers: { 'content-type': 'application/json' },
+    };
+
+    api.post(url, options).then((res) => {
+      if (!res.err) {
+        setDataBase((prevData) => {
+          return [...prevData, res];
+        });
+      } else {
+        setError(res);
+      }
     });
   };
 
   const updateData = (data) => {
-    setDataBase((prevData) =>
-      prevData.map((el) => {
-        return el.id === data.id ? data : el;
-      })
-    );
+    let endpoint = `${url}/${data.id}`;
+
+    console.log(endpoint);
+
+    let options = {
+      body: data,
+      headers: { 'content-type': 'application/json' },
+    };
+
+    api.put(endpoint, options).then((res) => {
+      if (!res.err) {
+        setDataBase((prevData) =>
+          prevData.map((el) => {
+            return el.id === data.id ? data : el;
+          })
+        );
+      } else {
+        setError(res);
+      }
+    });
   };
 
   const deleteData = (data) => {
@@ -50,11 +77,22 @@ const Crud = () => {
     );
 
     if (isDeleted) {
-      setDataBase((prevData) =>
-        prevData.filter((el) => {
-          return data.id !== el.id;
-        })
-      );
+      let endpoint = `${url}/${data.id}`;
+      let options = {
+        headers: { 'content-type': 'application/json' },
+      };
+
+      api.del(endpoint, options).then((res) => {
+        if (!res.err) {
+          setDataBase((prevData) =>
+            prevData.filter((el) => {
+              return data.id !== el.id;
+            })
+          );
+        } else {
+          setError(res);
+        }
+      });
     } else {
       return;
     }

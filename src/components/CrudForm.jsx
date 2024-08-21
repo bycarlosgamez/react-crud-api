@@ -50,7 +50,7 @@ const CrudForm = ({ handleCreate, handleUpdate, setDataEdit, dataEdit }) => {
   };
 
   return (
-    <div>
+    <div className='grid-1-3'>
       <h3>{dataEdit ? 'Edit entry' : 'Add new entry'}</h3>
       <form onSubmit={handleSubmit}>
         <label htmlFor='name'>Name</label>
