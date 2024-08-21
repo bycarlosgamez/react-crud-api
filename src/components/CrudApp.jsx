@@ -1,10 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { helperHttp } from '../helpers/helperHttps';
 import CrudForm from './CrudForm';
 import CrudTable from './CrudTable';
 
 const Crud = () => {
-  const [dataBase, setDataBase] = useState(db);
+  const [dataBase, setDataBase] = useState([]);
   const [dataEdit, setDataEdit] = useState(null);
+
+  let api = helperHttp();
+  let url = 'http://localhost:5000/guitars';
+
+  useEffect(() => {
+    api.get(url).then((res) => {
+      if (!res.err) {
+        setDataBase(res);
+      } else {
+        setDataBase(null);
+      }
+    });
+  }, []);
 
   const createData = (data) => {
     data.id = Date.now();
