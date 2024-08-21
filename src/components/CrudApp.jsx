@@ -2,23 +2,32 @@ import { useState, useEffect } from 'react';
 import { helperHttp } from '../helpers/helperHttps';
 import CrudForm from './CrudForm';
 import CrudTable from './CrudTable';
+import Loader from './Loader';
+import Message from './Message';
 
 const Crud = () => {
-  const [dataBase, setDataBase] = useState([]);
+  const [dataBase, setDataBase] = useState(null);
   const [dataEdit, setDataEdit] = useState(null);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   let api = helperHttp();
   let url = 'http://localhost:5000/guitars';
 
   useEffect(() => {
+    setIsLoading(true);
     api.get(url).then((res) => {
       if (!res.err) {
         setDataBase(res);
+        setError(null);
       } else {
         setDataBase(null);
+        setError(res);
       }
+
+      setIsLoading(false);
     });
-  }, []);
+  }, [url]);
 
   const createData = (data) => {
     data.id = Date.now();
@@ -60,11 +69,22 @@ const Crud = () => {
         handleUpdate={updateData}
         setDataEdit={setDataEdit}
       />
-      <CrudTable
-        db={dataBase}
-        setDataEdit={setDataEdit}
-        handleDelete={deleteData}
-      />
+
+      {isLoading && <Loader />}
+      {error && (
+        <Message
+          msg={`Error ${error.status}: ${error.statusText}`}
+          bgColor='#dc3545'
+        />
+      )}
+
+      {dataBase && (
+        <CrudTable
+          db={dataBase}
+          setDataEdit={setDataEdit}
+          handleDelete={deleteData}
+        />
+      )}
     </>
   );
 };
